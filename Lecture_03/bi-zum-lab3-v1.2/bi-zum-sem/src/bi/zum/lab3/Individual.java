@@ -9,7 +9,7 @@ import java.util.Random;
 
 
 /**
- * @author Your Name
+ * @author Ladislav Macoun
  */
 public class Individual extends AbstractIndividual {
 
