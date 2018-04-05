@@ -53,9 +53,10 @@ public class Individual extends AbstractIndividual {
     @Override
     public void computeFitness() {
         
-        int nodes = StateSpace.nodesCount();
+        int bonus = StateSpace.nodesCount();      
+        int penalization = 0;
         
-        int bonus = 0, penalization = repair();
+        repair();
         
         /* Penalize invalid solution */
         //result = result - repair();
@@ -69,7 +70,7 @@ public class Individual extends AbstractIndividual {
             }
         }
         
-        fitness = Math.log(nodes) - Math.log(penalization);
+        fitness = Math.log(bonus) - Math.log(penalization);
     }
 
     /**
@@ -174,9 +175,7 @@ public class Individual extends AbstractIndividual {
     * Repairs the genotype to make it valid, i.e. ensures all the edges
     * are in the vertex cover.
     */
-    private int repair() {
- 
-        int penalization = 0;
+    private void repair() {
         /* We iterate over all the edges */
         for(Edge e : StateSpace.getEdges()) {
             
@@ -187,11 +186,8 @@ public class Individual extends AbstractIndividual {
                     genome[e.getFromId()] =  true;              
                 } else {
                     genome[e.getToId()] = true;
-                }
-                
-                penalization ++;
+                }               
             }
         }
-        return penalization;
     }    
 }

@@ -29,26 +29,22 @@ public class Population extends AbstractPopulation {
      * @return List of selected individuals
      */
     public List<AbstractIndividual> selectIndividuals(int count) {
-        ArrayList<AbstractIndividual> selected = new ArrayList<AbstractIndividual>();
+        ArrayList<AbstractIndividual> selected = new ArrayList<>();
 
         // example of random selection of N individuals
         Random r = new Random();
         AbstractIndividual individual = individuals[r.nextInt(individuals.length)];
-        while (selected.size() < count) {
-            selected.add(individual);
-            individual = individuals[r.nextInt(individuals.length)];
-        }
-        
-        /* Get the fittest idividual */
         AbstractIndividual fittestIndividual = individuals[0];
         
-        for (int i = 0; i < individuals.length; i++) {
-            if (individuals[i].getFitness() > fittestIndividual.getFitness()) {
-                fittestIndividual = individuals[i];
+        while (selected.size() < count) {
+            if (individual.getFitness() > fittestIndividual.getFitness()) {
+                fittestIndividual = individual;
             }
+            
+            individual = individuals[r.nextInt(individuals.length)];
+            selected.add(fittestIndividual);
+                                 
         }
-        
-        selected.add(fittestIndividual);
         
         return selected;
     }
