@@ -159,13 +159,6 @@ public class Individual extends AbstractIndividual {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        
-        
-        /* TODO: implement own string representation, such as a comma-separated
-         * list of indices of nodes in the vertex cover
-         */
-        
-        
         sb.append(super.toString());
 
         return sb.toString();
