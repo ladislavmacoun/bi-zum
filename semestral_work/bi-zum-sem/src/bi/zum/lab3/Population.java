@@ -19,14 +19,8 @@ public class Population extends AbstractPopulation {
         for (int i = 0; i < individuals.length; i++) {
             individuals[i] = new Individual(evolution, true);
             individuals[i].computeFitness();
-        }     
-        convergenceCnt = 0;
+        }
     }
-    private int convergenceCnt;
-    
-    public void increaseConvergenceCnt() {
-        this.convergenceCnt++;
-    } 
     /**
      * Method to select individuals from population
      *
@@ -53,18 +47,5 @@ public class Population extends AbstractPopulation {
         
         return selected;
     }
-    
-    private int getAmount(int t, int a, int Tgen, int n0) {
-        return (int) Math.exp(((-a * t) / Tgen) * n0);  
-    }
-    
-    
-    public boolean hasConverge() { 
-        /**
-         * If there are the same fitness value for 50 generations return true 
-         * */
-        return convergenceCnt > 50;
-    }
-    
     
 }

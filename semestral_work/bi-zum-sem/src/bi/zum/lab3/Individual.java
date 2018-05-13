@@ -11,14 +11,15 @@ import java.util.Random;
 
 
 /**
- * @author Your Name
+ * @author Ladislav Macoun
  */
 public class Individual extends AbstractIndividual {
 
     private double fitness = Double.NaN;
     private AbstractEvolution evolution;
     
-    boolean[] genome;
+    int[] genome;
+    //StateSpaceOptimized myStateSpace = new StateSpaceOptimized();
     
     /**
      * Creates a new individual
@@ -31,29 +32,64 @@ public class Individual extends AbstractIndividual {
         this.evolution = evolution;
         
         /* Inicialize genome for whole statespace */
-        this.genome = new boolean[StateSpace.nodesCount()];
+        this.genome = new int[StateSpace.nodesCount()];
         
-        
-        for (int i = 0; i < StateSpace.nodesCount(); i++) {
-            this.genome[i] = false;
-        }
-        
-        for (Node n : StateSpace.getNodes()) {
-            if (n.getEdges().size() == 1) {
-                if (n.getId() == n.getEdges().get(0).getFromId()) {
-                    this.genome[n.getEdges().get(0).getToId()] = (Math.random() > 0.5) ? true : false; 
-                } else {
-                    this.genome[n.getEdges().get(0).getFromId()] = (Math.random() > 0.5) ? true : false; 
-                }
+        if(randomInit) {
+            
+            for (int i = 0; i < StateSpace.nodesCount(); i++) {
+                genome[i] = 0;
             }
+          
+            /**
+             * Heuristic initialization of genome 
+             * */
+            ArrayList<Edge> covred_edges = new ArrayList<>();
+
+            for (Edge e : StateSpace.getEdges()) {
+                if (!covred_edges.contains(e)) {
+                    Node from = StateSpace.getNode(e.getFromId());
+                    Node to = StateSpace.getNode(e.getToId());
+
+                    // If node is leaf assign it always value
+                    if (from.getEdges().size() == 1) {
+                        genome[from.getId()] = 2;
+                        genome[to.getId()] = 3;
+                    } else if (to.getEdges().size() == 1) {
+                         genome[from.getId()] = 3;
+                        genome[to.getId()] = 2;
+                    }
+                    if (genome[from.getId()] != 2 || genome[from.getId()] != 3 ||
+                        genome[to.getId()] != 2 || genome[to.getId()] != 3) {
+                        if (from.getEdges().size() > to.getEdges().size()) {
+                            genome[e.getFromId()] = 1;
+                        } else {
+                            genome[e.getToId()] = 1;
+                        }
+                        covred_edges.add(e);
+                    
+                    
+                    }
+         
+                }
+            } 
         }
-      
     }
 
     @Override
     public boolean isNodeSelected(int j) {
         
-        return genome[j];
+        switch (genome[j]) {
+            case 0 :
+                return false;
+            case 1 : 
+                return true;
+            case 2 : 
+                return false;
+            case 3 : 
+                return true;
+         default:
+             return false;
+        }
     }
 
     /**
@@ -74,14 +110,15 @@ public class Individual extends AbstractIndividual {
                
         /* Fitness: less covered vertices is better */
         for (int i = 0; i < genome.length; i++) {
-            if (genome[i]) {
+            if (genome[i] > 0) {
                 penalization ++;
             } else {
                 bonus++;
             }
         }
         
-        fitness = Math.log(bonus) - Math.log(penalization);
+        fitness = Math.exp(Math.log(bonus) - Math.log(penalization));
+        //fitness = bonus - penalization;
     }
 
     /**
@@ -105,7 +142,7 @@ public class Individual extends AbstractIndividual {
        public void mutate(double mutationRate) {
         for (int i = 0;  i < StateSpace.nodesCount(); i ++) {
             if ( mutationRate < Math.random() ) {
-                genome[i] = !genome[i];
+                genome[i] = genome[i] > 0 ? 0 : 1;
             } 
         }
     }
@@ -158,7 +195,7 @@ public class Individual extends AbstractIndividual {
     @Override
     public Individual deepCopy() {
         Individual newOne = new Individual(evolution, false);         
-        newOne.genome = new boolean[this.genome.length];
+        newOne.genome = new int[this.genome.length];
         System.arraycopy(this.genome, 0, newOne.genome, 0, this.genome.length);   
         newOne.fitness = this.fitness;
         return newOne;
@@ -171,10 +208,12 @@ public class Individual extends AbstractIndividual {
      */
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(super.toString());
-
-        return sb.toString();
+        String ret = "[";
+        for (int i = 0; i < StateSpace.nodesCount(); i++) {
+            ret += genome[i] + ", ";
+        }
+        ret += "]";
+        return ret;
     }
     
     /**
@@ -187,11 +226,12 @@ public class Individual extends AbstractIndividual {
             
             /* If there is not either one of the vertecies from 
              * the edge add random  one */
-            if (!genome[e.getFromId()] && !genome[e.getToId()]) {
+            if ((genome[e.getFromId()] == 0 || genome[e.getFromId()] == 2 ) 
+                    && (genome[e.getToId()] == 0 || genome[e.getToId()] == 2)) {
                 if (Math.random() > 0.5) {
-                    genome[e.getFromId()] =  true;              
+                    genome[e.getFromId()] =  1;              
                 } else {
-                    genome[e.getToId()] = true;
+                    genome[e.getToId()] = 1;
                 }               
             }
         }
