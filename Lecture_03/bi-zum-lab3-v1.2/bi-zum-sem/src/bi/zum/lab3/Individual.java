@@ -134,6 +134,7 @@ public class Individual extends AbstractIndividual {
         return result;
     }
 
+
     
     /**
      * When you are changing an individual (eg. at crossover) you probably don't
