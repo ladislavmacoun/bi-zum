@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+\providecommand{\biburl}[1]{\url{#1}}
+\providecommand{\urlprefix}{Available from: }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi:\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{doi:\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+\providecommand{\eprint}[2][]{\biburl{#2}}
+
+\bibitem{adga}
+Sen, O.; Shi, X. Improved Catastrophic Genetic Algorithms And Its Application
+  In Reactive Power Optimization. 05 2010: pp. 1 -- 4.
+
+\bibitem{dc}
+Yannibelli, V.; Amandi, A. A deterministic crowding evolutionary algorithm to
+  form learning teams in a collaborative learning context. volume~39, 08 2012:
+  p. 8584–8592.
+
+\bibitem{ga}
+Toro, F.; Ros, E.; et al. Evolutionary Algorithms for Multiobjective and
+  Multimodal Optimization of Diagnostic Schemes. volume~53, 03 2006: pp.
+  178--89.
+
+\end{thebibliography}
